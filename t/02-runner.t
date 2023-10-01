@@ -1,6 +1,14 @@
 ; use lib 'lib/'
 ; use strict; use warnings
 
+; use Path::Tiny
+
+; BEGIN
+    { my $testconfig = Path::Tiny::path(__FILE__)
+            ->parent->child( 'config' )
+    ; $ENV{'DINGLE_CONFIG_PATH'} = $testconfig
+    }
+
 ; use dIngle::CI::Library
 
 ; BEGIN { $dIngle::LOGGING = 'testing' }
@@ -16,6 +24,7 @@
 ; my $project = new dIngle::CI::Project::('test1')
 
 ; $project->load_modules
+; $project->load_config
 
 ; use dIngle::CI::Runner
 
@@ -30,6 +39,8 @@
 ; ok($main->buildable,'runner module is buildable')
 
 ; $runner->use_module_layer($main->name,$main)
+
+; dIngle->dump([$project->configuration->get_entry('integration')])
 
 ; $runner->build
 

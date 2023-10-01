@@ -26,16 +26,20 @@
 ; is([$project->modulepath],[])
 ; is([$project->structurepath],[])
 
+; ok($project->can('add_command'),'mixed in add_command')
+; is($project->commands,{},'mixed in commands')
+
 ; $project->load_config( instance => $instance )
 ; $project->load_modules
 
-; is(0+$project->list_modules,2,'count modules')
+; is(0+$project->list_modules,3,'count modules: ' 
+    . join(", ",$project->list_modules))
 
 ; is([$project->get_submodules],['I18N','Tasks'],'submodules')
 
 #; dIngle->dump($project->configuration)
 ; foreach my $prj ($project->get_integrations)
-    { dIngle->dump($prj)
+    { #dIngle->dump($prj)
     }
 
 ; done_testing
