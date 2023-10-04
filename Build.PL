@@ -14,7 +14,8 @@ my $builder = Module::Build->new(
     license => 'gpl3',
     dist_abstract => 'a continuous integration tool',
     requires => {
-       'perl' => '5.12.0'
+       'perl' => '5.12.0',
+       'System::Command' => '1.122'
     },
 );
 

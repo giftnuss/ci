@@ -20,13 +20,15 @@
     { my ($context) = @_
     ; my $project = $context->project
     ; foreach my $integration ($project->get_integrations)
-        { make("CI run integration",$context,$integration)
+        { my $taskname = $integration->starttask
+        ; make($taskname,$context,$integration)
         }
     })
 
 ; task("CI run integration", sub
     { my ($context,$integration) = @_
-    ; warn 'here'; exit 0;
+    
+    ; $integration->run
     })
     
 ; task("CI sleep", sub { sleep(1) })

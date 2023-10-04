@@ -6,6 +6,7 @@
 ; use strict; use warnings; use utf8
 ; use Carp ()
 ; use Path::Tiny ()
+; use Feature::Compat::Try 0.05
 
 ; use dIngle::CI::Monitor
 
@@ -17,9 +18,8 @@
     _ro => name => '$',
     _ro => project => '$',
     _rw => basepath => sub { Path::Tiny::path('.') },
-    _ro => monitor => [ '$', 
-        sub { dIngle::CI::Monitor->new(integration => $_[0]) }],
-    _rw => starttask => sub { 'Run integration' }
+    _ro => monitors => '@',
+    _rw => starttask => sub { 'CI run integration' }
 
 ; sub init
     { my ($self,%args) = @_
@@ -50,12 +50,79 @@
        if exists $config->{'starttask'}
 
     ; if(exists $config->{'monitor'})
-        { foreach my $filename (keys %{$config->{'monitor'}})
-            {
+        { my $monitors = $config->{'monitor'}
+        ; $monitors = [ $monitors ] 
+            unless Ref::Util::is_plain_arrayref( $monitors )
+            
+        ; foreach my $monitor ( @$monitors )
+            { $self->add_monitor($monitor)
             }
         }
     }
     
+; sub add_monitor
+    { my ($self,$config) = @_
+    ; my $monitor = new dIngle::CI::Monitor(integration => $self)
+
+    ; if( exists $config->{'file'} )
+        { my $files = $config->{'file'}
+        ; $files = [ $files ]
+            unless Ref::Util::is_plain_arrayref( $files )
+        ; $monitor->add_files($self->basepath,$files)
+        }
+      else
+        { Carp::croak("A monitor needs at least one file to monitor.")
+        }
+
+    ; if( exists $config->{'run'} )
+        { my @commands
+        ; foreach my $linenum (sort keys %{$config->{'run'}})
+            { my $line = $config->{'run'}->{$linenum}
+            ; my $split = index( $line, " ") 
+            ; if( $split == -1 )
+                { push @commands, [ $line , "" ]
+                }
+              else
+                { push @commands, 
+                    [ substr( $line, 0, $split )
+                    , substr( $line, $split+1 )
+                    ]
+                }
+            }
+        ; $monitor->add_script(\@commands)
+        }
+
+    ; push @{$self->[&_monitors]}, $monitor
+    }
+
+; sub run
+    { my ($self) = @_
+    ; $self->run_monitors
+    }
+    
+; sub run_monitors
+    { my ($self) = @_
+    ; foreach my $monitor ($self->monitors)
+        { $monitor->check
+        ; if( $monitor->changes )
+            { foreach my $change ($monitor->changes) 
+                { warn $change->name, " has changed.";
+                }
+            ; $monitor->run_script
+            }
+        }
+    }
+    
+; sub resolve_command
+    { my ($self,$name) = @_
+    ; try
+       { return $self->get_commandline($name)
+       }
+      catch($e)
+       { return $self->project->get_commandline($name)
+       }
+    }
+
 ; 1
 
 __END__

@@ -53,3 +53,14 @@
 
 __END__
 
+=NAME
+
+dIngle::CI::Project - a continuous integration project
+
+=SYNOPSIS
+
+   my $project = dIngle::CI::Project->new("prj-ci");
+   
+   $project->load_modules
+   $project->load_config
+

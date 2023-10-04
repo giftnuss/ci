@@ -4,6 +4,8 @@
 # **********************
 ; use strict; use warnings; use utf8
 
+; use Carp()
+
 ; use HO::class
     _rw => commands => '%'
 
@@ -20,6 +22,12 @@
     ; foreach my $cmd (keys %$commands)
         { $self->add_command($cmd,$commands->{$cmd})
         }
+    }
+
+; sub get_commandline
+    { my ($self,$name) = @_
+    ; return $self->commands->{$name} if exists $self->commands->{$name}
+    ; Carp::croak("Command '$name' is not defined.")
     }
 
 ; 1
