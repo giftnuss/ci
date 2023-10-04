@@ -1,11 +1,8 @@
-MYMETA.json
-MYMETA.yml
 *.bak
 *~
 blib/
 _build/
 logs/
-Build
 !Build/
 cover_db/
 site-lib/
