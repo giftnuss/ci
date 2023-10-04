@@ -11,4 +11,11 @@ cover_db/
 site-lib/
 *#
 vendor/
-minil.toml
+.build/
+/dIngle-CI-*
+/.build
+/_build_params
+/Build
+/Build.bat
+!META.json
+!LICENSE

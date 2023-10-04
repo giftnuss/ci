@@ -1,6 +1,6 @@
   package dIngle::CI::System::Tasks;
 # **********************************
-  our $VERSION = '0.01';
+  our $VERSION = '0.011';
 # **********************
 
 ; use dIngle::Hive::API qw(task)

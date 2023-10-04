@@ -1,6 +1,6 @@
   package dIngle::CI::Runner::Info;
 # *********************************
-  our $VERSION = '0.01';
+  our $VERSION = '0.011';
 # **********************
 ; use strict; use warnings; use utf8
 
